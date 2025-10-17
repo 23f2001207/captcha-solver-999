@@ -1,0 +1,156 @@
+Here's a minimal HTML, CSS, and JavaScript application that functions as a captcha solver, fulfilling your brief.
+
+**How to Use:**
+
+1.  **Save:** Copy the entire code block below into a file named `index.html`.
+2.  **Place Image:** Make sure the `sample.png` image (provided to you) is in the **same directory** as `index.html`.
+3.  **Open:** Open `index.html` in your web browser.
+4.  **Default Image:** It will display `sample.png` by default.
+5.  **Custom Image:** To use a custom image, add a `?url=` query parameter to the URL in your browser's address bar.
+    *   Example: `file:///path/to/your/index.html?url=https://example.com/some-other-captcha.png`
+    *   (Note: For external URLs, your browser might impose CORS restrictions if the image server doesn't allow cross-origin requests. Using local paths or images from services that permit CORS is ideal for testing.)
+6.  **Solve:** Type your solution into the input field and click "Submit". The submitted text will be displayed below the button.
+
+---
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimal Captcha Solver</title>
+    <style>
+        /* Minimal CSS for basic layout and styling */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align at the top */
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+            padding-top: 50px; /* Add some padding from the top */
+            box-sizing: border-box; /* Include padding in element's total width/height */
+        }
+
+        #app {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 1.8em;
+        }
+
+        #captchaImage {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            margin-bottom: 25px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #f9f9f9; /* Background for transparent PNGs */
+            border-radius: 4px;
+        }
+
+        #captchaInput {
+            width: calc(100% - 22px); /* Account for padding and border */
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em;
+            box-sizing: border-box; /* Include padding and border in element's total width/height */
+        }
+
+        #submitButton {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.2s ease;
+        }
+
+        #submitButton:hover {
+            background-color: #0056b3;
+        }
+
+        #feedback {
+            margin-top: 25px;
+            font-size: 1.1em;
+            color: #555;
+            min-height: 1.5em; /* Reserve space to prevent layout shifts */
+            word-wrap: break-word; /* Ensure long text wraps */
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h1>Solve the Captcha</h1>
+        <img id="captchaImage" src="sample.png" alt="Captcha Image">
+        <input type="text" id="captchaInput" placeholder="Enter text from image" autofocus>
+        <button id="submitButton">Submit</button>
+        <p id="feedback"></p>
+    </div>
+
+    <script>
+        // Minimal JavaScript for functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            const captchaImage = document.getElementById('captchaImage');
+            const captchaInput = document.getElementById('captchaInput');
+            const submitButton = document.getElementById('submitButton');
+            const feedbackParagraph = document.getElementById('feedback');
+
+            // 1. Determine image source based on URL parameter or default
+            const urlParams = new URLSearchParams(window.location.search);
+            const imageUrl = urlParams.get('url');
+
+            if (imageUrl) {
+                captchaImage.src = imageUrl;
+            } else {
+                // Default to the provided sample.png if no 'url' parameter
+                captchaImage.src = 'sample.png';
+            }
+
+            // 2. Handle submission
+            const handleSubmit = () => {
+                const enteredText = captchaInput.value.trim(); // Get and trim whitespace
+
+                if (enteredText) {
+                    feedbackParagraph.textContent = `Submitted: "${enteredText}"`;
+                    feedbackParagraph.style.color = 'green';
+                    console.log('Captcha solution submitted:', enteredText);
+                    // In a real application, you would send `enteredText` to a server
+                    // for verification here, and handle the server's response.
+                } else {
+                    feedbackParagraph.textContent = 'Please enter the text from the image.';
+                    feedbackParagraph.style.color = 'red';
+                }
+            };
+
+            // Event listener for the submit button click
+            submitButton.addEventListener('click', handleSubmit);
+
+            // Event listener for "Enter" key press in the input field
+            captchaInput.addEventListener('keypress', (event) => {
+                if (event.key === 'Enter') {
+                    handleSubmit();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+```
